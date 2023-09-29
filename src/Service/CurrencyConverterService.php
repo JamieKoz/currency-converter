@@ -4,7 +4,7 @@ namespace App\Service;
 
 class CurrencyConverterService
 {
-    public function __construct(private array $rates, protected string $csvFilePath)
+    public function __construct(protected array $rates, protected string $csvFilePath)
     {
     }
 
