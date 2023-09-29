@@ -9,14 +9,15 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use App\Service\CurrencyConverterService;
 
 #[AsCommand(
-    name: 'currency:converter',
-    description: 'Add a short description for your command',
+    name: 'currency:convert',
+    description: 'Convert currency values',
 )]
 class CurrencyConverterCommand extends Command
 {
-    public function __construct()
+    public function __construct(protected CurrencyConverterService $service)
     {
         parent::__construct();
     }
@@ -36,17 +37,16 @@ class CurrencyConverterCommand extends Command
         $amount = $input->getArgument('amount');
         $from = $input->getArgument('from');
         $to = $input->getArgument('to');
-        dd($amount, $from, $to);
-        //
-        // if ($arg1) {
-        //     $io->note(sprintf('You passed an argument: %s', $arg1));
-        // }
-        //
-        // if ($input->getOption('option1')) {
-        //     // ...
-        // }
-        //
-        // $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+        $conversionRate = $this->service->getConversionRate($from, $to);
+
+        if ($conversionRate === null) {
+            throw new InvalidArgumentException('Unsupported currency conversion.');
+        }
+
+        $convertedAmount = $amount * $conversionRate;
+        $output->writeln("Succesfully converted your currency. $amount $from = $convertedAmount in $to");
+
+        // write to csv
 
         return Command::SUCCESS;
     }
