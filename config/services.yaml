@@ -4,7 +4,20 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-
+    currency_rates:
+        AUD:
+            USD: 0.6667
+            NZD: 1.1111
+            GBP: 0.5882
+            EUR: 0.6667
+        USD:
+            AUD: 1.5
+        NZD:
+            AUD: 0.9
+        GBP:
+            AUD: 1.7
+        EUR:
+            AUD: 1.5
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -19,6 +32,9 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+    App\Service\CurrencyConverterService:
+        arguments:
+            $rates : '%currency_rates%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

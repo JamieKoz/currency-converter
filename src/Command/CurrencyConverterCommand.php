@@ -35,19 +35,19 @@ class CurrencyConverterCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $amount = $input->getArgument('amount');
-        $from = $input->getArgument('from');
-        $to = $input->getArgument('to');
-        $conversionRate = $this->service->getConversionRate($from, $to);
+        $from = strtoupper($input->getArgument('from'));
+        $to = strtoupper($input->getArgument('to'));
 
-        if ($conversionRate === null) {
-            throw new InvalidArgumentException('Unsupported currency conversion.');
+        try {
+            $convertedAmount = $this->service->convert($amount, $from, $to);
+
+            $output->writeln("Succesfully converted your currency. $amount $from = $convertedAmount in $to");
+
+            // write to csv
+            return Command::SUCCESS;
+        } catch (InvalidArgumentException $e) {
+            $io->error($e->getMessage());
+            return Command::FAILURE;
         }
-
-        $convertedAmount = $amount * $conversionRate;
-        $output->writeln("Succesfully converted your currency. $amount $from = $convertedAmount in $to");
-
-        // write to csv
-
-        return Command::SUCCESS;
     }
 }
