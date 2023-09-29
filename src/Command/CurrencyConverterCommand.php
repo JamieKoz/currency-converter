@@ -43,10 +43,13 @@ class CurrencyConverterCommand extends Command
 
             $output->writeln("Succesfully converted your currency. $amount $from = $convertedAmount in $to");
 
-            // write to csv
+            $this->service->writeToCsv($amount, $from, $convertedAmount, $to);
+
             return Command::SUCCESS;
+
         } catch (InvalidArgumentException $e) {
             $io->error($e->getMessage());
+
             return Command::FAILURE;
         }
     }
