@@ -8,12 +8,12 @@ class CurrencyConverterService
     {
     }
 
-    public function getConversionRate(string $from, string $to)
+    public function getConversionRate(string $from, string $to): ?float
     {
         return $this->rates[$from][$to] ?? null;
     }
 
-    public function convert(float $amount, string $from, string $to)
+    public function convert(float $amount, string $from, string $to): float
     {
         $conversionRate = $this->getConversionRate($from, $to);
         if($conversionRate === null) {
